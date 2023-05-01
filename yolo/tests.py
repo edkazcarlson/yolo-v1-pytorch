@@ -47,15 +47,18 @@ def test_and_draw_mAP(net: torch.nn.Module, test_iter_raw: data.DataLoader, devi
 		# metrics calculation
 		calc = ObjectDetectionMetricsCalculator(20, 0.1)
 
-		for i, (X, YRaw) in enumerate(test_iter_raw):
+		for i, (X, YRaw) in enumerate(test_iter_raw): # per batch
 			print("Batch %d / %d" % (i, len(test_iter_raw)))
-			display.clear_output(wait=True)
+			# display.clear_output(wait=True)
 			
 			X = X.to(device)
 			YHat = net(X)
-			for yhat, yraw in zip(YHat, YRaw):
+			for yhat, yraw in zip(YHat, YRaw): # per image in batch
 				yhat = nms(yhat)
 				calc.add_image_data(yhat.cpu(), yraw)
+			
+			# if i > 10:
+			# 	break
 
 		print("Test VOC mAP:", calc.calculate_VOCmAP())
 		print("Test COCO mAP:", calc.calculate_COCOmAP())

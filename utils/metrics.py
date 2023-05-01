@@ -67,6 +67,7 @@ class ObjectDetectionMetricsCalculator():
 			pred (torch.Tensor): detection prediction
 			truth (str): ground truth json string
 		"""
+		# print('calling add_image_data')
 		pred = pred.reshape(-1, 30)
 		truth = json.loads(truth)
 
@@ -136,6 +137,8 @@ class ObjectDetectionMetricsCalculator():
 				truth_chosen[choose_truth_index[i]] = True
 				is_difficult = truth[choose_truth_index[i]]['difficult']
 
+			# print("appending to 'data'")
+			# Every bounding box in every image with confidence * score > confidence_thres gets added
 			self.data[cat]['data'].append(CalculationMetrics(iou[i], float(confidence * score), mustbe_FP, is_difficult))
 
 			# update detection statistics
@@ -164,6 +167,7 @@ class ObjectDetectionMetricsCalculator():
 		# accumulated difficult count
 		acc_difficult = 0
 		# sort metrics by confidence
+		
 		data = sorted(self.data[class_idx]['data'], key=cmp_to_key(compare_metrics))
 		for i, metrics in enumerate(data):
 			if metrics.IoU >= iou_thres and not metrics.mustbe_FP and not metrics.is_difficult:
@@ -199,7 +203,7 @@ class ObjectDetectionMetricsCalculator():
 		else:
 			raise Exception('Unknown Interpolation Method')
 
-		max_dict = {}
+		max_dict = {} #recall -> max precision seen so far
 		gmax = 0
 
 		for pr in prl[::-1]:

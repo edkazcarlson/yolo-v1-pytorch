@@ -261,7 +261,7 @@ def pretrain(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay,
 	# TODO: IMPLEMENT HERE
 
 
-def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, num_gpu=1, accum_batch_num=1, save_path='./model', load=None, load_epoch=-1, pretrained=False):
+def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, num_gpu=1, accum_batch_num=1, save_path='./model', load=None, load_epoch=-1, pretrained=False, save_every = 10):
 	'''
 	Train net work. Some notes for load & load_epoch:
 	:param load: the file of model weights to load
@@ -394,8 +394,9 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, nu
 			print_and_log("epoch: %d, test loss: %.4f, time: %.4f" % (epoch + 1, test_l.item(), timer.sum()), log_file)
 			animator.add(epoch + 1, (None, test_l))
 
-		# save model
-		torch.save(net.state_dict(), os.path.join(save_path, f'./{time.time_ns()}-epoch-{epoch}.pth'))
+		# save model every x epochs including final one
+		if epoch == num_epochs - 1 or epoch % save_every == 0:
+			torch.save(net.state_dict(), os.path.join(save_path, f'./{time.time_ns()}-epoch-{epoch}.pth'))
 
 
 def nms(pred, threshold=0.5):

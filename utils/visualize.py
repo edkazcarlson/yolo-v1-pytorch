@@ -25,6 +25,9 @@ def draw_precision_recall(pr_data: list, class_idx: Optional[int]=None):
 		pr_data (list): Precision Recall Curve Data
 		class_idx (Optional[int]): Class index, used to render title
 	"""
+
+	#TODO - there is no thresholding at different IoUs for the pr curve, this just takes the precision and reacall of each image.
+	# The order is based on the order in the data loader, causing weird curves
 	p = [data['precision'] for data in pr_data]
 	r = [data['recall'] for data in pr_data]
 
