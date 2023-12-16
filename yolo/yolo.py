@@ -214,6 +214,7 @@ def yolo_loss(yhat, y):
 		x_min, x_max, y_min, y_max = calc_coord(y_area)
 		x_min_hat, x_max_hat, y_min_hat, y_max_hat = calc_coord(yhat_area)
 
+		#get the smallest edges of the box
 		wi = torch.min(x_max, x_max_hat) - torch.max(x_min, x_min_hat)
 		wi = torch.max(wi, torch.zeros_like(wi))
 		hi = torch.min(y_max, y_max_hat) - torch.max(y_min, y_min_hat)

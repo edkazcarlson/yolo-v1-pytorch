@@ -68,15 +68,15 @@ class ObjectDetectionMetricsCalculator():
 			truth (str): ground truth json string
 		"""
 		# print('calling add_image_data')
-		pred = pred.reshape(-1, 30)
+		pred = pred.reshape(-1, 30) # 1 x (prediction for each cell in the 7*7 grid)
 		truth = json.loads(truth)
 
 		choose_truth_index = [None for _ in range(pred.shape[0])]
 		iou = [0 for _ in range(pred.shape[0])]
 
 		for i in range(pred.shape[0]):
-			score, cat = pred[i][10:30].max(dim=0)
-			confidence = pred[i][4]
+			score, cat = pred[i][10:30].max(dim=0) #score of the highest class, category of highest class
+			confidence = pred[i][4] # iou prediction
 			# filter by confidence threshold
 			if confidence * score < self.confidence_thres: continue
 			
@@ -175,10 +175,13 @@ class ObjectDetectionMetricsCalculator():
 			if metrics.is_difficult:
 				acc_difficult += 1
 			if i + 1 - acc_difficult > 0:
+				print('appended to ret')
 				ret.append({
 					'precision': acc_TP / (i + 1 - acc_difficult),
 					'recall': acc_TP / truth_cnt
 				})
+			else:
+				print('did not append to ret')
 		
 		return ret
 
@@ -202,6 +205,11 @@ class ObjectDetectionMetricsCalculator():
 			intp_pts = [0.01 * i for i in range(101)]
 		else:
 			raise Exception('Unknown Interpolation Method')
+
+		# AP = 0
+		# for pr in prl:
+		# 	AP += pr['precision']
+		# AP /= len(prl)
 
 		max_dict = {} #recall -> max precision seen so far
 		gmax = 0

@@ -48,7 +48,7 @@ def test_and_draw_mAP(net: torch.nn.Module, test_iter_raw: data.DataLoader, devi
 		calc = ObjectDetectionMetricsCalculator(20, 0.1)
 
 		for i, (X, YRaw) in enumerate(test_iter_raw): # per batch
-			print("Batch %d / %d" % (i, len(test_iter_raw)))
+			# print("Batch %d / %d" % (i, len(test_iter_raw)))
 			# display.clear_output(wait=True)
 			
 			X = X.to(device)
@@ -61,6 +61,7 @@ def test_and_draw_mAP(net: torch.nn.Module, test_iter_raw: data.DataLoader, devi
 			# 	break
 
 		print("Test VOC mAP:", calc.calculate_VOCmAP())
+		return
 		print("Test COCO mAP:", calc.calculate_COCOmAP())
 
 		for i in range(20):
